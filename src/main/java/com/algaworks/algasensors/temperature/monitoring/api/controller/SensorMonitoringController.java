@@ -2,9 +2,12 @@ package com.algaworks.algasensors.temperature.monitoring.api.controller;
 
 import java.time.OffsetDateTime;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algasensors.temperature.monitoring.api.model.SensorMonitoringBuilder;
@@ -25,15 +28,17 @@ public class SensorMonitoringController {
         this.repository = repository;
     }
 
+    @PutMapping("/enable")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void enable(@PathVariable TSID sensorId) {
+        final SensorMonitoring sensorMonitoring = findByIdOrDefault(sensorId);
+        sensorMonitoring.setEnable(true);
+        repository.saveAndFlush(sensorMonitoring);
+    }
+
     @GetMapping
-    public SensorMonitoringOutput getDetail(@PathVariable TSID sensorId){
-        final SensorMonitoring sensorMonitoring = repository.findById(new SensorId(sensorId))
-            .orElse(SensorMonitoringBuilder.sensorMonitoring()
-                .id(new SensorId(sensorId))
-                .enable(false)
-                .lastTemperature(null)
-                .updateAt(OffsetDateTime.now())
-            .build());
+    public SensorMonitoringOutput getDetail(@PathVariable TSID sensorId) {
+        final SensorMonitoring sensorMonitoring = findByIdOrDefault(sensorId);
 
         return SensorMonitoringOutputBuilder.builder()
             .id(sensorMonitoring.getId())
@@ -42,5 +47,15 @@ public class SensorMonitoringController {
             .updateAt(sensorMonitoring.getUpdateAt())
         .build();
     }
-    
+
+    private SensorMonitoring findByIdOrDefault(TSID sensorId) {
+        return repository.findById(new SensorId(sensorId))                
+            .orElse(SensorMonitoringBuilder.sensorMonitoring()
+                .id(new SensorId(sensorId))
+                .enable(false)
+                .lastTemperature(null)
+                .updateAt(null)
+            .build());
+    }
+
 }
