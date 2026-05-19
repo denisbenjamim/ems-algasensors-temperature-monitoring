@@ -1,8 +1,8 @@
 package com.algaworks.algasensors.temperature.monitoring.api.controller;
 
-import java.time.OffsetDateTime;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -26,6 +26,14 @@ public class SensorMonitoringController {
 
     public SensorMonitoringController(SensorMonitoringRepository repository) {
         this.repository = repository;
+    }
+
+    @DeleteMapping("/disable")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void disable(@PathVariable TSID sensorId) {
+        final SensorMonitoring sensorMonitoring = findByIdOrDefault(sensorId);
+        sensorMonitoring.setEnable(false);
+        repository.saveAndFlush(sensorMonitoring);
     }
 
     @PutMapping("/enable")
