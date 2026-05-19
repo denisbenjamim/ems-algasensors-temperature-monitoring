@@ -1,4 +1,4 @@
-package com.algaworks.algasensors.temperature.monitoring.api.model;
+package com.algaworks.algasensors.temperature.monitoring.domain.model;
 
 import java.io.Serializable;
 import java.util.Objects;
