@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.algaworks.algasensors.temperature.monitoring.api.model.SensorMonitoringBuilder;
 import com.algaworks.algasensors.temperature.monitoring.api.model.SensorMonitoringOutput;
 import com.algaworks.algasensors.temperature.monitoring.api.model.SensorMonitoringOutputBuilder;
 import com.algaworks.algasensors.temperature.monitoring.domain.model.SensorId;
 import com.algaworks.algasensors.temperature.monitoring.domain.model.SensorMonitoring;
+import com.algaworks.algasensors.temperature.monitoring.domain.model.SensorMonitoringBuilder;
 import com.algaworks.algasensors.temperature.monitoring.domain.repository.SensorMonitoringRepository;
 
 import io.hypersistence.tsid.TSID;
@@ -28,7 +28,7 @@ public class SensorMonitoringController {
         this.repository = repository;
     }
 
-    @DeleteMapping("/disable")
+    @DeleteMapping("/enabled")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void disable(@PathVariable TSID sensorId) {
         final SensorMonitoring sensorMonitoring = findByIdOrDefault(sensorId);
@@ -36,7 +36,7 @@ public class SensorMonitoringController {
         repository.saveAndFlush(sensorMonitoring);
     }
 
-    @PutMapping("/enable")
+    @PutMapping("/enabled")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void enable(@PathVariable TSID sensorId) {
         final SensorMonitoring sensorMonitoring = findByIdOrDefault(sensorId);
@@ -58,7 +58,7 @@ public class SensorMonitoringController {
 
     private SensorMonitoring findByIdOrDefault(TSID sensorId) {
         return repository.findById(new SensorId(sensorId))                
-            .orElse(SensorMonitoringBuilder.sensorMonitoring()
+            .orElse(SensorMonitoringBuilder.builder()
                 .id(new SensorId(sensorId))
                 .enable(false)
                 .lastTemperature(null)
