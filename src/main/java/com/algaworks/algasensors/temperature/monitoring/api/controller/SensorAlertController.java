@@ -3,6 +3,7 @@ package com.algaworks.algasensors.temperature.monitoring.api.controller;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -30,10 +31,10 @@ public class SensorAlertController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public SensorAlertOutput getAlerta(@PathVariable TSID sensorId){
-        SensorAlert sensorAlert = findById(sensorId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        SensorAlert sensorAlert = findrByIdOrResponseNotFound(sensorId);
         return createSensorAlertOutput(sensorAlert);
     }
-    
+  
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     public SensorAlertOutput createOrUpdate(@PathVariable TSID sensorId, SensorAlertInput input){
@@ -49,6 +50,18 @@ public class SensorAlertController {
         return createSensorAlertOutput(sensorAlert);
     }
 
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteSensorAlert(@PathVariable TSID sensorId){
+        SensorAlert sensorAlert = findrByIdOrResponseNotFound(sensorId);
+
+        repository.delete(sensorAlert);
+    }
+
+    private SensorAlert findrByIdOrResponseNotFound(TSID sensorId) {
+        return findById(sensorId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+    
     private SensorAlertOutput createSensorAlertOutput(SensorAlert sensorAlert) {
         return SensorAlertOutputBuilder.builder()
             .id(sensorAlert.getId().getValue())
