@@ -1,40 +1,22 @@
 package com.algaworks.algasensors.temperature.monitoring.domain.model;
 
-import java.io.Serializable;
-import java.util.Objects;
+import java.util.UUID;
 
-import io.hypersistence.tsid.TSID;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-public class SensorId implements Serializable {
-    
-    private TSID value;
+public class TemperatureLogId {
+    private UUID value;
 
-    protected SensorId() {}
+    public TemperatureLogId() {
+    }
 
-    public SensorId(TSID value) {
-        Objects.requireNonNull(value);
+    public TemperatureLogId(UUID value) {
         this.value = value;
     }
 
-    public SensorId(Long value) {
-        Objects.requireNonNull(value);
-        this.value = TSID.from(value);
-    }
-
-    public SensorId(String value) {
-        Objects.requireNonNull(value);
-        this.value = TSID.from(value);
-    }
-
-    public TSID getValue() {
-        return value;
-    }
-
-    @Override
-    public String toString() {
-        return value.toString();
+     public TemperatureLogId(String value) {
+        this.value = UUID.fromString(value);
     }
 
     @Override
@@ -53,7 +35,7 @@ public class SensorId implements Serializable {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        SensorId other = (SensorId) obj;
+        TemperatureLogId other = (TemperatureLogId) obj;
         if (value == null) {
             if (other.value != null)
                 return false;
@@ -61,5 +43,18 @@ public class SensorId implements Serializable {
             return false;
         return true;
     }
-    
+
+    @Override
+    public String toString() {
+        return value.toString();
+    }
+
+    public UUID getValue() {
+        return value;
+    }
+
+    public void setValue(UUID value) {
+        this.value = value;
+    }
+   
 }
