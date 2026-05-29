@@ -12,10 +12,8 @@ import io.hypersistence.tsid.TSID;
 public class TSIDJacksonConfig {
 
     @Bean
-    public Module tsidModule(){
-        final SimpleModule module = new SimpleModule();
-        module.addSerializer(TSID.class, new TSIDToStringSerializer());
-
-        return module;
+    Module tsidModule(){
+        return  new SimpleModule()
+        .addSerializer(TSID.class, new TSIDToStringSerializer());
     }
 }
